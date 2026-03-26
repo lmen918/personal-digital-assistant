@@ -162,12 +162,12 @@ fun EventDetailScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("All Day")
+                Text(stringResource(R.string.all_day))
                 Switch(checked = isAllDay, onCheckedChange = { isAllDay = it })
             }
 
             if (allTags.isNotEmpty()) {
-                Text(text = "Tags", style = MaterialTheme.typography.labelLarge)
+                Text(text = stringResource(R.string.tags_label), style = MaterialTheme.typography.labelLarge)
                 FlowTagSelector(allTags = allTags, selectedTags = selectedTags, onTagToggle = { tag ->
                     selectedTags = if (selectedTags.any { it.id == tag.id }) {
                         selectedTags.filter { it.id != tag.id }
@@ -407,7 +407,7 @@ fun TimePickerDialog(
     val state = rememberTimePickerState(initialHour = initialHour, initialMinute = initialMinute)
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        title = { Text("Select Time") },
+        title = { Text(stringResource(R.string.select_time)) },
         text = { TimePicker(state = state) },
         confirmButton = {
             TextButton(onClick = { onTimeSelected(state.hour, state.minute) }) { Text(stringResource(R.string.save)) }

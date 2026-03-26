@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -92,10 +93,10 @@ fun RetrospectiveScreen(
     viewModel.saveError?.let { err ->
         AlertDialog(
             onDismissRequest = { viewModel.saveError = null },
-            title = { Text("Error") },
+            title = { Text(stringResource(R.string.error_title)) },
             text = { Text(err) },
             confirmButton = {
-                TextButton(onClick = { viewModel.saveError = null }) { Text("OK") }
+                TextButton(onClick = { viewModel.saveError = null }) { Text(stringResource(R.string.ok)) }
             }
         )
     }
@@ -186,7 +187,7 @@ private fun SessionPhase(
                         onAddEntry(entryText)
                         entryText = ""
                     }) {
-                        Icon(Icons.Default.Close, contentDescription = null)
+                        Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_entry))
                     }
                 }
             }
@@ -247,7 +248,7 @@ private fun JournalPhase(
         EntrySummarySection(title = stringResource(R.string.negative_session), entries = negativeEntries)
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text("Journal Entry", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.journal_entry), style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
             value = journalText,
@@ -299,7 +300,7 @@ private fun CompletePhase(onReset: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(32.dp))
         OutlinedButton(onClick = onReset, modifier = Modifier.fillMaxWidth()) {
-            Text("Start New Retrospective")
+            Text(stringResource(R.string.start_new_retrospective))
         }
     }
 }

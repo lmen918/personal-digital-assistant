@@ -38,4 +38,12 @@
     <string name="sync_to_calendar">Sync to Calendar</string>
     <string name="notification_channel_name">PDA Events</string>
     <string name="notification_channel_desc">Notifications for PDA calendar events</string>
+    <string name="all_day">All Day</string>
+    <string name="tags_label">Tags</string>
+    <string name="journal_entry">Journal Entry</string>
+    <string name="start_new_retrospective">Start New Retrospective</string>
+    <string name="error_title">Error</string>
+    <string name="ok">OK</string>
+    <string name="select_time">Select Time</string>
+    <string name="add_entry">Add entry</string>
 </resources>
