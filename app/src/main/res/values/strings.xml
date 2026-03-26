@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Personal Digital Assistant</string>
+    <string name="timeline">Timeline</string>
+    <string name="tags">Tags</string>
+    <string name="retrospective">Retrospective</string>
+    <string name="add_event">Add Event</string>
+    <string name="edit_event">Edit Event</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="notification_options">Notification Options</string>
+    <string name="no_notification">No Notification</string>
+    <string name="in_app_notification">In-App Notification</string>
+    <string name="calendar_notification">Let Calendar Handle</string>
+    <string name="minutes_before">minutes before</string>
+    <string name="add_tag">Add Tag</string>
+    <string name="edit_tag">Edit Tag</string>
+    <string name="tag_name">Tag Name</string>
+    <string name="color">Color</string>
+    <string name="retro_intro_title">Retrospective</string>
+    <string name="retro_intro_desc">You will go through 3 timed sessions (5 min each) to capture positive, neutral, and negative reflections. Afterwards, you can write a journal entry and save it as Markdown.</string>
+    <string name="start">Start</string>
+    <string name="next">Next</string>
+    <string name="positive_session">✅ Positive</string>
+    <string name="median_session">➡️ Neutral</string>
+    <string name="negative_session">❌ Negative</string>
+    <string name="journal_session">📓 Journal</string>
+    <string name="add_entry_hint">Type an entry and press Enter...</string>
+    <string name="journal_hint">Write your journal entry here...</string>
+    <string name="save_journal">Save Journal</string>
+    <string name="retro_complete">Retrospective Complete!</string>
+    <string name="retro_saved">Journal saved successfully.</string>
+    <string name="sync_to_calendar">Sync to Calendar</string>
+    <string name="notification_channel_name">PDA Events</string>
+    <string name="notification_channel_desc">Notifications for PDA calendar events</string>
+</resources>
