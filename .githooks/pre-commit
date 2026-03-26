@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+MAX_SIZE_BYTES=$((50 * 1024 * 1024))
+has_errors=0
+
+# Scan staged content so checks match what will actually be committed.
+while IFS= read -r -d '' path; do
+  if [[ "$path" == .tools/* ]]; then
+    echo "ERROR: refusing to commit '$path' (local tooling artifacts must stay untracked)." >&2
+    has_errors=1
+    continue
+  fi
+
+  # Size is read from the staged blob, not the working copy.
+  blob_size=$(git cat-file -s ":$path" 2>/dev/null || echo 0)
+  if (( blob_size > MAX_SIZE_BYTES )); then
+    size_mb=$(awk -v bytes="$blob_size" 'BEGIN { printf "%.2f", bytes / 1024 / 1024 }')
+    echo "ERROR: '$path' is ${size_mb}MB staged (limit is 50.00MB)." >&2
+    has_errors=1
+  fi
+done < <(git diff --cached --name-only --diff-filter=ACMRTUXB -z)
+
+if (( has_errors != 0 )); then
+  cat >&2 <<'MSG'
+Commit blocked by pre-commit checks.
+- Remove local tool binaries from staging (e.g. .tools/)
+- Keep large artifacts out of git; use releases/artifact storage or Git LFS when appropriate
+MSG
+  exit 1
+fi
+
+exit 0
+

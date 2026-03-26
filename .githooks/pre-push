@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# pre-push: blocks pushing commits that contain large files (>50MB) or
+# local tooling artifacts (.tools/) that were accidentally staged/committed.
+set -euo pipefail
+
+MAX_SIZE_BYTES=$((50 * 1024 * 1024))
+has_errors=0
+
+remote="$1"
+remote_url="$2"
+
+while read -r local_ref local_oid remote_ref remote_oid; do
+  # All-zeros SHA means a deletion push – nothing to check.
+  zero_sha="0000000000000000000000000000000000000000"
+  [[ "$local_oid" == "$zero_sha" ]] && continue
+
+  # Range: commits the remote doesn't have yet.
+  if [[ "$remote_oid" == "$zero_sha" ]]; then
+    range="$local_oid"
+  else
+    range="$remote_oid..$local_oid"
+  fi
+
+  # Walk every blob in every new commit.
+  while IFS=$'\t' read -r blob_size path; do
+    if [[ "$path" == .tools/* ]]; then
+      echo "ERROR: '$path' in push range $range is a local tooling artifact and must not be pushed." >&2
+      has_errors=1
+      continue
+    fi
+
+    if (( blob_size > MAX_SIZE_BYTES )); then
+      size_mb=$(awk -v bytes="$blob_size" 'BEGIN { printf "%.2f", bytes / 1024 / 1024 }')
+      echo "ERROR: '$path' is ${size_mb}MB in push range $range (limit is 50.00MB)." >&2
+      has_errors=1
+    fi
+  done < <(git diff-tree --no-commit-id -r "$range" --name-only -z 2>/dev/null \
+    | tr '\0' '\n' \
+    | while IFS= read -r p; do
+        size=$(git cat-file -s "$(git rev-list -n1 "$local_oid" -- "$p"):$p" 2>/dev/null || echo 0)
+        printf '%s\t%s\n' "$size" "$p"
+      done)
+done
+
+if (( has_errors != 0 )); then
+  cat >&2 <<'MSG'
+Push blocked by pre-push checks.
+- Remove the large/tooling files from the offending commits (git rebase -i, git reset)
+- Keep large artifacts out of git; use GitHub Releases, artifact storage, or Git LFS
+MSG
+  exit 1
+fi
+
+exit 0
+
