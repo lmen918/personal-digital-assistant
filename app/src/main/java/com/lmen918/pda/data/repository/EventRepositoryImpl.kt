@@ -44,19 +44,7 @@ class EventRepositoryImpl @Inject constructor(
         eventDao.deleteEvent(event.toEntity())
 
     override suspend fun getEventById(id: Long): Event? =
-        eventDao.getEventById(id)?.let { entity ->
-            Event(
-                id = entity.id,
-                title = entity.title,
-                description = entity.description,
-                startTime = entity.startTime,
-                endTime = entity.endTime,
-                calendarEventId = entity.calendarEventId,
-                notifyInApp = entity.notifyInApp,
-                notifyMinutesBefore = entity.notifyMinutesBefore,
-                isAllDay = entity.isAllDay
-            )
-        }
+        eventDao.getEventWithTagsById(id)?.toDomain()
 
     override fun syncToCalendar(context: Context, event: Event): Long? {
         return try {

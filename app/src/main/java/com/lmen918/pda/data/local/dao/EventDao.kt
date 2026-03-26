@@ -27,6 +27,7 @@ interface EventDao {
     @Query("DELETE FROM EventTagCrossRef WHERE eventId = :eventId")
     suspend fun deleteTagsForEvent(eventId: Long)
 
+    @Transaction
     @Query("SELECT * FROM events WHERE id = :id")
-    suspend fun getEventById(id: Long): EventEntity?
+    suspend fun getEventWithTagsById(id: Long): EventWithTags?
 }
