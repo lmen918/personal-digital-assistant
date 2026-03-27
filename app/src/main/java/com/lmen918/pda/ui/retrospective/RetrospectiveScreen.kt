@@ -25,6 +25,7 @@ import java.util.Locale
 @Composable
 fun RetrospectiveScreen(
     onOpenSettings: () -> Unit,
+    onOpenJournals: () -> Unit,
     settingsSavedMessage: String? = null,
     onSettingsSavedMessageShown: () -> Unit = {},
     viewModel: RetrospectiveViewModel = hiltViewModel()
@@ -44,6 +45,9 @@ fun RetrospectiveScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
                 actions = {
+                    TextButton(onClick = onOpenJournals) {
+                        Text(stringResource(R.string.journals))
+                    }
                     IconButton(onClick = onOpenSettings) {
                         Icon(
                             imageVector = Icons.Default.Settings,

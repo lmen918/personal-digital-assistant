@@ -19,6 +19,14 @@
     <string name="retro_saved">Journal saved successfully.</string>
     <string name="retro_saved_path">Saved to: %1$s</string>
     <string name="journal_entry">Journal Entry</string>
+    <string name="journals">Journals</string>
+    <string name="journal_entries_title">Journal Entries</string>
+    <string name="no_journal_entries_title">No journal entries yet</string>
+    <string name="no_journal_entries_message">Start by conducting a retrospective, then save your journal to see it here.</string>
+    <string name="journal_saved_at">Saved: %1$s</string>
+    <string name="empty_journal_content">(No journal text in this entry)</string>
+    <string name="retry">Retry</string>
+    <string name="failed_to_load_journals">Failed to load journal entries</string>
     <string name="start_new_retrospective">Start New Retrospective</string>
     <string name="add_entry">Add entry</string>
     <string name="error_title">Error</string>
