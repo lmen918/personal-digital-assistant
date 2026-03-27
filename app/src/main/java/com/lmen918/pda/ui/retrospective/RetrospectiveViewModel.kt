@@ -1,10 +1,10 @@
 package com.lmen918.pda.ui.retrospective
 
 import android.content.Context
-import android.net.Uri
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lmen918.pda.journal.JournalStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -30,6 +30,7 @@ class RetrospectiveViewModel @Inject constructor(
     val medianEntries = mutableStateListOf<String>()
     val negativeEntries = mutableStateListOf<String>()
     var journalText by mutableStateOf("")
+    var lastSavedLocation by mutableStateOf<String?>(null)
     var saveError by mutableStateOf<String?>(null)
 
     private var timerJob: Job? = null
@@ -40,6 +41,9 @@ class RetrospectiveViewModel @Inject constructor(
 
     fun startPhase(newPhase: Phase) {
         phase = newPhase
+        if (newPhase == Phase.INTRO) {
+            lastSavedLocation = null
+        }
         if (newPhase == Phase.POSITIVE || newPhase == Phase.MEDIAN || newPhase == Phase.NEGATIVE) {
             timeLeftSeconds = sessionDurationSeconds
             startTimer()
@@ -92,13 +96,14 @@ class RetrospectiveViewModel @Inject constructor(
         }
     }
 
-    fun saveJournal(uri: Uri) {
+    fun saveJournal() {
         viewModelScope.launch {
             try {
+                val timestamp = SimpleDateFormat("yyyyMMdd_HHmm", Locale.getDefault()).format(Date())
+                val fileName = "retrospective_$timestamp.md"
                 val markdown = buildMarkdown()
-                context.contentResolver.openOutputStream(uri)?.use { stream ->
-                    stream.write(markdown.toByteArray())
-                }
+                JournalStorage.saveJournal(context, fileName, markdown)
+                lastSavedLocation = "Documents/retrospective/$fileName"
                 phase = Phase.COMPLETE
             } catch (e: Exception) {
                 saveError = e.message ?: "Failed to save journal"

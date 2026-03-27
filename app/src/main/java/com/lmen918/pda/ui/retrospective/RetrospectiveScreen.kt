@@ -1,7 +1,5 @@
 package com.lmen918.pda.ui.retrospective
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,17 +24,34 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RetrospectiveScreen(
+    onOpenSettings: () -> Unit,
+    settingsSavedMessage: String? = null,
+    onSettingsSavedMessageShown: () -> Unit = {},
     viewModel: RetrospectiveViewModel = hiltViewModel()
 ) {
-    val createDocumentLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.CreateDocument("text/markdown")
-    ) { uri ->
-        uri?.let { viewModel.saveJournal(it) }
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(settingsSavedMessage) {
+        if (settingsSavedMessage != null) {
+            snackBarHostState.showSnackbar(settingsSavedMessage)
+            onSettingsSavedMessageShown()
+        }
     }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
-            TopAppBar(title = { Text(stringResource(R.string.retrospective)) })
+            TopAppBar(
+                title = { Text(stringResource(R.string.app_name)) },
+                actions = {
+                    IconButton(onClick = onOpenSettings) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = stringResource(R.string.settings)
+                        )
+                    }
+                }
+            )
         }
     ) { padding ->
         Box(
@@ -77,13 +93,10 @@ fun RetrospectiveScreen(
                     negativeEntries = viewModel.negativeEntries,
                     journalText = viewModel.journalText,
                     onJournalTextChange = { viewModel.journalText = it },
-                    onSave = {
-                        val timestamp = java.text.SimpleDateFormat("yyyyMMdd_HHmm", java.util.Locale.getDefault())
-                            .format(java.util.Date())
-                        createDocumentLauncher.launch("retrospective_$timestamp.md")
-                    }
+                    onSave = { viewModel.saveJournal() }
                 )
                 RetrospectiveViewModel.Phase.COMPLETE -> CompletePhase(
+                    savedLocation = viewModel.lastSavedLocation,
                     onReset = { viewModel.startPhase(RetrospectiveViewModel.Phase.INTRO) }
                 )
             }
@@ -278,7 +291,7 @@ private fun EntrySummarySection(title: String, entries: List<String>) {
 }
 
 @Composable
-private fun CompletePhase(onReset: () -> Unit) {
+private fun CompletePhase(savedLocation: String?, onReset: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -298,6 +311,14 @@ private fun CompletePhase(onReset: () -> Unit) {
             text = stringResource(R.string.retro_saved),
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+        if (savedLocation != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.retro_saved_path, savedLocation),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
         Spacer(modifier = Modifier.height(32.dp))
         OutlinedButton(onClick = onReset, modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.start_new_retrospective))

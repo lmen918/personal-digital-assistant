@@ -1,27 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Personal Digital Assistant</string>
-    <string name="timeline">Timeline</string>
-    <string name="tags">Tags</string>
+    <string name="app_name">Retrospective</string>
+
+    <!-- Retrospective -->
     <string name="retrospective">Retrospective</string>
-    <string name="add_event">Add Event</string>
-    <string name="edit_event">Edit Event</string>
-    <string name="save">Save</string>
-    <string name="cancel">Cancel</string>
-    <string name="delete">Delete</string>
-    <string name="title">Title</string>
-    <string name="description">Description</string>
-    <string name="start_time">Start Time</string>
-    <string name="end_time">End Time</string>
-    <string name="notification_options">Notification Options</string>
-    <string name="no_notification">No Notification</string>
-    <string name="in_app_notification">In-App Notification</string>
-    <string name="calendar_notification">Let Calendar Handle</string>
-    <string name="minutes_before">minutes before</string>
-    <string name="add_tag">Add Tag</string>
-    <string name="edit_tag">Edit Tag</string>
-    <string name="tag_name">Tag Name</string>
-    <string name="color">Color</string>
     <string name="retro_intro_title">Retrospective</string>
     <string name="retro_intro_desc">You will go through 3 timed sessions (5 min each) to capture positive, neutral, and negative reflections. Afterwards, you can write a journal entry and save it as Markdown.</string>
     <string name="start">Start</string>
@@ -30,20 +12,33 @@
     <string name="median_session">➡️ Neutral</string>
     <string name="negative_session">❌ Negative</string>
     <string name="journal_session">📓 Journal</string>
-    <string name="add_entry_hint">Type an entry and press Enter...</string>
-    <string name="journal_hint">Write your journal entry here...</string>
+    <string name="add_entry_hint">Type an entry and press Enter…</string>
+    <string name="journal_hint">Write your journal entry here…</string>
     <string name="save_journal">Save Journal</string>
     <string name="retro_complete">Retrospective Complete!</string>
     <string name="retro_saved">Journal saved successfully.</string>
-    <string name="sync_to_calendar">Sync to Calendar</string>
-    <string name="notification_channel_name">PDA Events</string>
-    <string name="notification_channel_desc">Notifications for PDA calendar events</string>
-    <string name="all_day">All Day</string>
-    <string name="tags_label">Tags</string>
+    <string name="retro_saved_path">Saved to: %1$s</string>
     <string name="journal_entry">Journal Entry</string>
     <string name="start_new_retrospective">Start New Retrospective</string>
+    <string name="add_entry">Add entry</string>
     <string name="error_title">Error</string>
     <string name="ok">OK</string>
-    <string name="select_time">Select Time</string>
-    <string name="add_entry">Add entry</string>
+    <string name="settings">Settings</string>
+    <string name="back">Back</string>
+    <string name="reminder_section_title">Reminder</string>
+    <string name="reminder_section_body">Set a recurring reminder so you keep up with your retrospective routine.</string>
+    <string name="enable_reminders">Enable reminders</string>
+    <string name="reminder_frequency">Repeat</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="reminder_day_of_week">Day of week</string>
+    <string name="reminder_day_of_month">Day of month</string>
+    <string name="reminder_time">Time</string>
+    <string name="save_settings">Save settings</string>
+    <string name="saving_settings">Saving…</string>
+    <string name="monthly_hint">If a month has fewer days, reminder runs on the last day of that month.</string>
+    <string name="reminder_channel_name">Retrospective reminders</string>
+    <string name="reminder_channel_description">Scheduled reminders to do your retrospective</string>
+    <string name="reminder_notification_title">Time for your retrospective</string>
+    <string name="reminder_notification_body">Take a few minutes to reflect on your week.</string>
 </resources>

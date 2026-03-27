@@ -4,9 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.lmen918.pda.ui.navigation.PdaNavGraph
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.lmen918.pda.ui.retrospective.RetrospectiveScreen
+import com.lmen918.pda.ui.settings.SettingsScreen
 import com.lmen918.pda.ui.theme.PdaTheme
 import dagger.hilt.android.AndroidEntryPoint
+
+private enum class AppScreen {
+    RETROSPECTIVE,
+    SETTINGS
+}
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -14,8 +24,23 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            var currentScreen by remember { mutableStateOf(AppScreen.RETROSPECTIVE) }
+            var settingsSavedMessage by remember { mutableStateOf<String?>(null) }
             PdaTheme {
-                PdaNavGraph()
+                when (currentScreen) {
+                    AppScreen.RETROSPECTIVE -> RetrospectiveScreen(
+                        onOpenSettings = { currentScreen = AppScreen.SETTINGS },
+                        settingsSavedMessage = settingsSavedMessage,
+                        onSettingsSavedMessageShown = { settingsSavedMessage = null }
+                    )
+                    AppScreen.SETTINGS -> SettingsScreen(
+                        onNavigateBack = { currentScreen = AppScreen.RETROSPECTIVE },
+                        onSaveAndNavigateBack = { message ->
+                            settingsSavedMessage = message
+                            currentScreen = AppScreen.RETROSPECTIVE
+                        }
+                    )
+                }
             }
         }
     }
