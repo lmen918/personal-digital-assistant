@@ -1,6 +1,6 @@
 # Retrospective
 
-A focused retrospective app to help you reflect on your week — capturing what went well, what was neutral, and what could improve, then consolidating everything into a Markdown journal.
+A focused retrospective app to help you reflect on your life — capturing what went well, what was neutral, and what could improve, then consolidating everything into a Markdown journal.
 
 > Scope note: the previous timeline/events/tags modules were removed. The app is now intentionally retrospective-first.
 
