@@ -14,12 +14,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lmen918.pda.R
 import java.util.Locale
+
+const val RETRO_SETTINGS_BUTTON_TAG = "retro_settings_button"
+const val RETRO_INTRO_DESCRIPTION_TAG = "retro_intro_description"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +53,10 @@ fun RetrospectiveScreen(
                     TextButton(onClick = onOpenJournals) {
                         Text(stringResource(R.string.journals))
                     }
-                    IconButton(onClick = onOpenSettings) {
+                    IconButton(
+                        onClick = onOpenSettings,
+                        modifier = Modifier.testTag(RETRO_SETTINGS_BUTTON_TAG)
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = stringResource(R.string.settings)
@@ -65,11 +73,13 @@ fun RetrospectiveScreen(
         ) {
             when (viewModel.phase) {
                 RetrospectiveViewModel.Phase.INTRO -> IntroPhase(
+                    sessionDurationMinutes = viewModel.sessionDurationMinutes,
                     onStart = { viewModel.startPhase(RetrospectiveViewModel.Phase.POSITIVE) }
                 )
                 RetrospectiveViewModel.Phase.POSITIVE -> SessionPhase(
                     title = stringResource(R.string.positive_session),
                     timeLeft = viewModel.timeLeftSeconds,
+                    totalDurationSeconds = viewModel.sessionDurationSeconds,
                     entries = viewModel.positiveEntries,
                     onAddEntry = { viewModel.addEntry(it) },
                     onRemoveEntry = { viewModel.removeEntry(it) },
@@ -78,6 +88,7 @@ fun RetrospectiveScreen(
                 RetrospectiveViewModel.Phase.MEDIAN -> SessionPhase(
                     title = stringResource(R.string.median_session),
                     timeLeft = viewModel.timeLeftSeconds,
+                    totalDurationSeconds = viewModel.sessionDurationSeconds,
                     entries = viewModel.medianEntries,
                     onAddEntry = { viewModel.addEntry(it) },
                     onRemoveEntry = { viewModel.removeEntry(it) },
@@ -86,6 +97,7 @@ fun RetrospectiveScreen(
                 RetrospectiveViewModel.Phase.NEGATIVE -> SessionPhase(
                     title = stringResource(R.string.negative_session),
                     timeLeft = viewModel.timeLeftSeconds,
+                    totalDurationSeconds = viewModel.sessionDurationSeconds,
                     entries = viewModel.negativeEntries,
                     onAddEntry = { viewModel.addEntry(it) },
                     onRemoveEntry = { viewModel.removeEntry(it) },
@@ -120,7 +132,14 @@ fun RetrospectiveScreen(
 }
 
 @Composable
-private fun IntroPhase(onStart: () -> Unit) {
+private fun IntroPhase(sessionDurationMinutes: Int, onStart: () -> Unit) {
+    val resources = LocalContext.current.resources
+    val durationLabel = resources.getQuantityString(
+        R.plurals.retro_session_minutes,
+        sessionDurationMinutes,
+        sessionDurationMinutes
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -135,9 +154,10 @@ private fun IntroPhase(onStart: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = stringResource(R.string.retro_intro_desc),
+            text = stringResource(R.string.retro_intro_desc, durationLabel),
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.testTag(RETRO_INTRO_DESCRIPTION_TAG)
         )
         Spacer(modifier = Modifier.height(32.dp))
         Button(onClick = onStart, modifier = Modifier.fillMaxWidth()) {
@@ -150,6 +170,7 @@ private fun IntroPhase(onStart: () -> Unit) {
 private fun SessionPhase(
     title: String,
     timeLeft: Int,
+    totalDurationSeconds: Int,
     entries: List<String>,
     onAddEntry: (String) -> Unit,
     onRemoveEntry: (String) -> Unit,
@@ -178,7 +199,9 @@ private fun SessionPhase(
         }
         Spacer(modifier = Modifier.height(8.dp))
         LinearProgressIndicator(
-            progress = { timeLeft.toFloat() / RetrospectiveViewModel.sessionDurationSeconds },
+            progress = {
+                (timeLeft.toFloat() / totalDurationSeconds.toFloat()).coerceIn(0f, 1f)
+            },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))

@@ -22,6 +22,7 @@ class ReminderPreferencesRepository @Inject constructor(
     private val dayOfMonthKey = intPreferencesKey("day_of_month")
     private val hourOfDayKey = intPreferencesKey("hour_of_day")
     private val minuteKey = intPreferencesKey("minute")
+    private val sessionDurationMinutesKey = intPreferencesKey("session_duration_minutes")
 
     val settings: Flow<ReminderSettings> = context.reminderDataStore.data.map { prefs ->
         ReminderSettings(
@@ -31,7 +32,8 @@ class ReminderPreferencesRepository @Inject constructor(
             dayOfWeek = prefs[dayOfWeekKey] ?: java.util.Calendar.SATURDAY,
             dayOfMonth = prefs[dayOfMonthKey] ?: 28,
             hourOfDay = prefs[hourOfDayKey] ?: 8,
-            minute = prefs[minuteKey] ?: 0
+            minute = prefs[minuteKey] ?: 0,
+            sessionDurationMinutes = (prefs[sessionDurationMinutesKey] ?: 1).coerceIn(1, 60)
         )
     }
 
@@ -43,6 +45,7 @@ class ReminderPreferencesRepository @Inject constructor(
             prefs[dayOfMonthKey] = settings.dayOfMonth
             prefs[hourOfDayKey] = settings.hourOfDay
             prefs[minuteKey] = settings.minute
+            prefs[sessionDurationMinutesKey] = settings.sessionDurationMinutes.coerceIn(1, 60)
         }
     }
 }

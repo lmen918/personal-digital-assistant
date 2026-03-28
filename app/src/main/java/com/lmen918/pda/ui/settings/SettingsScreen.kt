@@ -18,6 +18,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lmen918.pda.R
@@ -45,6 +47,11 @@ import java.text.DateFormatSymbols
 import java.util.Calendar
 import java.util.Locale
 import kotlinx.coroutines.launch
+
+const val SETTINGS_SAVE_BUTTON_TAG = "settings_save_button"
+const val SETTINGS_DURATION_CHIP_PREFIX = "settings_duration_chip_"
+
+private val SESSION_DURATION_PRESETS = listOf(1, 3, 5)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -147,6 +154,12 @@ fun SettingsScreen(
                     ) {
                         Text(formatTime(viewModel.hourOfDay, viewModel.minute))
                     }
+
+                    Text(stringResource(R.string.session_length_title), style = MaterialTheme.typography.titleSmall)
+                    SessionDurationRow(
+                        durationMinutes = viewModel.sessionDurationMinutes,
+                        onSelected = viewModel::updateSessionDurationMinutes
+                    )
                 }
             }
 
@@ -160,7 +173,9 @@ fun SettingsScreen(
                         onSaveAndNavigateBack(message)
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(SETTINGS_SAVE_BUTTON_TAG),
                 enabled = !isSaving
             ) {
                 Text(
@@ -169,6 +184,40 @@ fun SettingsScreen(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun SessionDurationRow(durationMinutes: Int, onSelected: (Int) -> Unit) {
+    val resources = LocalContext.current.resources
+    val selectedPreset = remember(durationMinutes) {
+        SESSION_DURATION_PRESETS.minByOrNull { kotlin.math.abs(it - durationMinutes) } ?: 1
+    }
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            SESSION_DURATION_PRESETS.forEach { presetMinutes ->
+                FilterChip(
+                    selected = selectedPreset == presetMinutes,
+                    onClick = { onSelected(presetMinutes) },
+                    label = {
+                        Text(
+                            resources.getQuantityString(
+                                R.plurals.retro_session_minutes,
+                                presetMinutes,
+                                presetMinutes
+                            )
+                        )
+                    },
+                    modifier = Modifier.testTag("$SETTINGS_DURATION_CHIP_PREFIX$presetMinutes")
+                )
+            }
+        }
+        Text(
+            text = stringResource(R.string.session_length_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 

@@ -22,6 +22,8 @@ class SettingsViewModel @Inject constructor(
     private val reminderScheduler: ReminderScheduler
 ) : ViewModel() {
 
+    private val sessionDurationPresets = listOf(1, 3, 5)
+
     var reminderEnabled by mutableStateOf(false)
         private set
     var frequency by mutableStateOf(ReminderFrequency.WEEKLY)
@@ -33,6 +35,8 @@ class SettingsViewModel @Inject constructor(
     var hourOfDay by mutableIntStateOf(8)
         private set
     var minute by mutableIntStateOf(0)
+        private set
+    var sessionDurationMinutes by mutableIntStateOf(1)
         private set
 
     init {
@@ -63,6 +67,10 @@ class SettingsViewModel @Inject constructor(
         this.minute = minute
     }
 
+    fun updateSessionDurationMinutes(value: Int) {
+        sessionDurationMinutes = closestSessionDurationPreset(value)
+    }
+
     suspend fun saveReminderSettings(): String {
         val settings = ReminderSettings(
             enabled = reminderEnabled,
@@ -70,7 +78,8 @@ class SettingsViewModel @Inject constructor(
             dayOfWeek = dayOfWeek,
             dayOfMonth = dayOfMonth,
             hourOfDay = hourOfDay,
-            minute = minute
+            minute = minute,
+            sessionDurationMinutes = sessionDurationMinutes
         )
 
         reminderPreferencesRepository.save(settings)
@@ -85,6 +94,11 @@ class SettingsViewModel @Inject constructor(
         dayOfMonth = settings.dayOfMonth
         hourOfDay = settings.hourOfDay
         minute = settings.minute
+        sessionDurationMinutes = closestSessionDurationPreset(settings.sessionDurationMinutes)
+    }
+
+    private fun closestSessionDurationPreset(value: Int): Int {
+        return sessionDurationPresets.minByOrNull { kotlin.math.abs(it - value) } ?: 1
     }
 }
 

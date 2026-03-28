@@ -5,6 +5,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lmen918.pda.journal.JournalStorage
+import com.lmen918.pda.reminder.ReminderPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -16,14 +17,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RetrospectiveViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val reminderPreferencesRepository: ReminderPreferencesRepository
 ) : ViewModel() {
 
     enum class Phase { INTRO, POSITIVE, MEDIAN, NEGATIVE, JOURNAL, COMPLETE }
 
     var phase by mutableStateOf(Phase.INTRO)
         private set
-    var timeLeftSeconds by mutableIntStateOf(sessionDurationSeconds)
+    var sessionDurationMinutes by mutableIntStateOf(DEFAULT_SESSION_DURATION_MINUTES)
+        private set
+    var timeLeftSeconds by mutableIntStateOf(DEFAULT_SESSION_DURATION_MINUTES * 60)
         private set
 
     val positiveEntries = mutableStateListOf<String>()
@@ -35,8 +39,28 @@ class RetrospectiveViewModel @Inject constructor(
 
     private var timerJob: Job? = null
 
+    val sessionDurationSeconds: Int
+        get() = sessionDurationMinutes * 60
+
     companion object {
-        const val sessionDurationSeconds = 300
+        private const val DEFAULT_SESSION_DURATION_MINUTES = 1
+    }
+
+    init {
+        viewModelScope.launch {
+            reminderPreferencesRepository.settings.collect { settings ->
+                val updatedMinutes = settings.sessionDurationMinutes.coerceIn(1, 60)
+                sessionDurationMinutes = updatedMinutes
+
+                if (phase == Phase.INTRO) {
+                    timeLeftSeconds = sessionDurationSeconds
+                } else if (
+                    phase == Phase.POSITIVE || phase == Phase.MEDIAN || phase == Phase.NEGATIVE
+                ) {
+                    timeLeftSeconds = timeLeftSeconds.coerceAtMost(sessionDurationSeconds)
+                }
+            }
+        }
     }
 
     fun startPhase(newPhase: Phase) {

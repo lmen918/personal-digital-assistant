@@ -11,6 +11,7 @@ data class ReminderSettings(
     val dayOfWeek: Int = java.util.Calendar.SATURDAY,
     val dayOfMonth: Int = 28,
     val hourOfDay: Int = 8,
-    val minute: Int = 0
+    val minute: Int = 0,
+    val sessionDurationMinutes: Int = 1
 )
 
