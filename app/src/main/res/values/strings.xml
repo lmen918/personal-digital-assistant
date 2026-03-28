@@ -4,6 +4,7 @@
 
     <!-- Retrospective -->
     <string name="retrospective">Retrospective</string>
+    <string name="nav_home">Home</string>
     <string name="retro_intro_title">Retrospective</string>
     <string name="retro_intro_desc">You will go through 3 timed sessions (%1$s each) to capture positive, neutral, and negative reflections. Afterwards, you can write a journal entry and save it as Markdown.</string>
     <string name="start">Start</string>

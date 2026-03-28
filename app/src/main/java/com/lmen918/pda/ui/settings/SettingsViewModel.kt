@@ -101,5 +101,3 @@ class SettingsViewModel @Inject constructor(
         return sessionDurationPresets.minByOrNull { kotlin.math.abs(it - value) } ?: 1
     }
 }
-
-

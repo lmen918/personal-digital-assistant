@@ -44,7 +44,6 @@ import com.lmen918.pda.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JournalEntriesScreen(
-    onNavigateBack: () -> Unit,
     viewModel: JournalEntriesViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {
@@ -105,15 +104,7 @@ fun JournalEntriesScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.journal_entries_title)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
-                }
+                title = { Text(stringResource(R.string.journal_entries_title)) }
             )
         }
     ) { padding ->

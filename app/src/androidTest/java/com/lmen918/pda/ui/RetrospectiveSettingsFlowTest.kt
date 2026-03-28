@@ -2,11 +2,16 @@ package com.lmen918.pda.ui
 
 import android.content.Context
 import androidx.activity.ComponentActivity
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
@@ -15,11 +20,12 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.lmen918.pda.NAV_HOME_TAG
+import com.lmen918.pda.NAV_SETTINGS_TAG
 import com.lmen918.pda.reminder.ReminderPreferencesRepository
 import com.lmen918.pda.reminder.ReminderScheduler
 import com.lmen918.pda.reminder.ReminderSettings
 import com.lmen918.pda.ui.retrospective.RETRO_INTRO_DESCRIPTION_TAG
-import com.lmen918.pda.ui.retrospective.RETRO_SETTINGS_BUTTON_TAG
 import com.lmen918.pda.ui.retrospective.RetrospectiveScreen
 import com.lmen918.pda.ui.retrospective.RetrospectiveViewModel
 import com.lmen918.pda.ui.settings.SETTINGS_DURATION_CHIP_PREFIX
@@ -60,10 +66,13 @@ class RetrospectiveSettingsFlowTest {
     fun intro_updates_after_saving_new_duration_from_settings() {
         setTestContent()
 
-        composeRule.onNodeWithTag(RETRO_SETTINGS_BUTTON_TAG).performClick()
+        // Navigate to settings via bottom nav
+        composeRule.onNodeWithTag(NAV_SETTINGS_TAG).performClick()
+        
         composeRule.onNodeWithTag("${SETTINGS_DURATION_CHIP_PREFIX}5").performClick()
         composeRule.onNodeWithTag(SETTINGS_SAVE_BUTTON_TAG).performClick()
 
+        // After saving, it should navigate back to Retrospective automatically (as per MainActivity logic)
         composeRule.waitUntil(timeoutMillis = 5_000) {
             composeRule.onAllNodesWithTag(RETRO_INTRO_DESCRIPTION_TAG).fetchSemanticsNodes().isNotEmpty()
         }
@@ -72,9 +81,11 @@ class RetrospectiveSettingsFlowTest {
             .assertTextContains("5 minutes each")
     }
 
+    private enum class AppScreen { RETROSPECTIVE, SETTINGS }
+
     private fun setTestContent() {
         composeRule.setContent {
-            var isSettingsScreen by remember { mutableStateOf(false) }
+            var currentScreen by remember { mutableStateOf(AppScreen.RETROSPECTIVE) }
             var settingsSavedMessage by remember { mutableStateOf<String?>(null) }
             val context = LocalContext.current.applicationContext
             val repository = remember { ReminderPreferencesRepository(context) }
@@ -82,25 +93,41 @@ class RetrospectiveSettingsFlowTest {
             val settingsViewModel = remember { SettingsViewModel(repository, scheduler) }
             val retrospectiveViewModel = remember { RetrospectiveViewModel(context, repository) }
 
-            if (isSettingsScreen) {
-                SettingsScreen(
-                    onNavigateBack = { isSettingsScreen = false },
-                    onSaveAndNavigateBack = { message ->
-                        settingsSavedMessage = message
-                        isSettingsScreen = false
-                    },
-                    viewModel = settingsViewModel
-                )
-            } else {
-                RetrospectiveScreen(
-                    onOpenSettings = { isSettingsScreen = true },
-                    onOpenJournals = {},
-                    settingsSavedMessage = settingsSavedMessage,
-                    onSettingsSavedMessageShown = { settingsSavedMessage = null },
-                    viewModel = retrospectiveViewModel
-                )
+            Scaffold(
+                bottomBar = {
+                    NavigationBar {
+                        NavigationBarItem(
+                            selected = currentScreen == AppScreen.RETROSPECTIVE,
+                            onClick = { currentScreen = AppScreen.RETROSPECTIVE },
+                            icon = { Icon(Icons.Filled.Home, contentDescription = null) },
+                            modifier = Modifier.testTag(NAV_HOME_TAG)
+                        )
+                        NavigationBarItem(
+                            selected = currentScreen == AppScreen.SETTINGS,
+                            onClick = { currentScreen = AppScreen.SETTINGS },
+                            icon = { Icon(Icons.Filled.Settings, contentDescription = null) },
+                            modifier = Modifier.testTag(NAV_SETTINGS_TAG)
+                        )
+                    }
+                }
+            ) { innerPadding ->
+                Box(modifier = Modifier.padding(innerPadding)) {
+                    when (currentScreen) {
+                        AppScreen.RETROSPECTIVE -> RetrospectiveScreen(
+                            settingsSavedMessage = settingsSavedMessage,
+                            onSettingsSavedMessageShown = { settingsSavedMessage = null },
+                            viewModel = retrospectiveViewModel
+                        )
+                        AppScreen.SETTINGS -> SettingsScreen(
+                            onSaveAndNavigateBack = { message ->
+                                settingsSavedMessage = message
+                                currentScreen = AppScreen.RETROSPECTIVE
+                            },
+                            viewModel = settingsViewModel
+                        )
+                    }
+                }
             }
         }
     }
 }
-

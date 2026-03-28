@@ -14,4 +14,3 @@ data class ReminderSettings(
     val minute: Int = 0,
     val sessionDurationMinutes: Int = 1
 )
-
