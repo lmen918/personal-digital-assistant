@@ -1,4 +1,4 @@
-package com.lmen918.pda.ui.theme
+package com.lmen918.retro.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -29,7 +29,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun PdaTheme(
+fun retrospectiveTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit

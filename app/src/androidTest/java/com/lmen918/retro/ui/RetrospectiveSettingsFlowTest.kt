@@ -1,4 +1,4 @@
-package com.lmen918.pda.ui
+package com.lmen918.retro.ui
 
 import android.content.Context
 import androidx.activity.ComponentActivity
@@ -20,18 +20,18 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.lmen918.pda.NAV_HOME_TAG
-import com.lmen918.pda.NAV_SETTINGS_TAG
-import com.lmen918.pda.reminder.ReminderPreferencesRepository
-import com.lmen918.pda.reminder.ReminderScheduler
-import com.lmen918.pda.reminder.ReminderSettings
-import com.lmen918.pda.ui.retrospective.RETRO_INTRO_DESCRIPTION_TAG
-import com.lmen918.pda.ui.retrospective.RetrospectiveScreen
-import com.lmen918.pda.ui.retrospective.RetrospectiveViewModel
-import com.lmen918.pda.ui.settings.SETTINGS_DURATION_CHIP_PREFIX
-import com.lmen918.pda.ui.settings.SETTINGS_SAVE_BUTTON_TAG
-import com.lmen918.pda.ui.settings.SettingsScreen
-import com.lmen918.pda.ui.settings.SettingsViewModel
+import com.lmen918.retro.NAV_HOME_TAG
+import com.lmen918.retro.NAV_SETTINGS_TAG
+import com.lmen918.retro.reminder.ReminderPreferencesRepository
+import com.lmen918.retro.reminder.ReminderScheduler
+import com.lmen918.retro.reminder.ReminderSettings
+import com.lmen918.retro.ui.retrospective.RETRO_INTRO_DESCRIPTION_TAG
+import com.lmen918.retro.ui.retrospective.RetrospectiveScreen
+import com.lmen918.retro.ui.retrospective.RetrospectiveViewModel
+import com.lmen918.retro.ui.settings.SETTINGS_DURATION_CHIP_PREFIX
+import com.lmen918.retro.ui.settings.SETTINGS_SAVE_BUTTON_TAG
+import com.lmen918.retro.ui.settings.SettingsScreen
+import com.lmen918.retro.ui.settings.SettingsViewModel
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule

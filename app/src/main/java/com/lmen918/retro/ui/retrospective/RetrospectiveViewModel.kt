@@ -1,11 +1,11 @@
-package com.lmen918.pda.ui.retrospective
+package com.lmen918.retro.ui.retrospective
 
 import android.content.Context
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lmen918.pda.journal.JournalStorage
-import com.lmen918.pda.reminder.ReminderPreferencesRepository
+import com.lmen918.retro.journal.JournalStorage
+import com.lmen918.retro.reminder.ReminderPreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job

@@ -1,4 +1,4 @@
-package com.lmen918.pda.ui.settings
+package com.lmen918.retro.ui.settings
 
 import android.Manifest
 import android.app.TimePickerDialog
@@ -37,8 +37,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lmen918.pda.R
-import com.lmen918.pda.reminder.ReminderFrequency
+import com.lmen918.retro.R
+import com.lmen918.retro.reminder.ReminderFrequency
 import java.text.DateFormatSymbols
 import java.util.Calendar
 import java.util.Locale

@@ -1,4 +1,4 @@
-package com.lmen918.pda.reminder
+package com.lmen918.retro.reminder
 
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -6,9 +6,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import com.lmen918.pda.MainActivity
-import com.lmen918.pda.PdaApplication
-import com.lmen918.pda.R
+import com.lmen918.retro.MainActivity
+import com.lmen918.retro.Retrospective
+import com.lmen918.retro.R
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -50,7 +50,7 @@ class ReminderReceiver : BroadcastReceiver() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notification = NotificationCompat.Builder(context, PdaApplication.REMINDER_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, Retrospective.REMINDER_CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_popup_reminder)
             .setContentTitle(context.getString(R.string.reminder_notification_title))
             .setContentText(context.getString(R.string.reminder_notification_body))

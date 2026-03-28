@@ -1,4 +1,4 @@
-package com.lmen918.pda.reminder
+package com.lmen918.retro.reminder
 
 import android.app.AlarmManager
 import android.app.PendingIntent

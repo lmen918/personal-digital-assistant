@@ -1,4 +1,4 @@
-package com.lmen918.pda.ui.settings
+package com.lmen918.retro.ui.settings
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -6,10 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lmen918.pda.reminder.ReminderFrequency
-import com.lmen918.pda.reminder.ReminderPreferencesRepository
-import com.lmen918.pda.reminder.ReminderScheduler
-import com.lmen918.pda.reminder.ReminderSettings
+import com.lmen918.retro.reminder.ReminderFrequency
+import com.lmen918.retro.reminder.ReminderPreferencesRepository
+import com.lmen918.retro.reminder.ReminderScheduler
+import com.lmen918.retro.reminder.ReminderSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Calendar
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.lmen918.pda.journal
+package com.lmen918.retro.journal
 
 import android.content.ContentValues
 import android.content.Context

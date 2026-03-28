@@ -1,14 +1,14 @@
-package com.lmen918.pda
+package com.lmen918.retro
 
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
-import com.lmen918.pda.journal.JournalStorage
+import com.lmen918.retro.journal.JournalStorage
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class PdaApplication : Application() {
+class Retrospective : Application() {
 
 	override fun onCreate() {
 		super.onCreate()

@@ -1,4 +1,4 @@
-package com.lmen918.pda.reminder
+package com.lmen918.retro.reminder
 
 import java.util.Calendar
 import java.util.TimeZone

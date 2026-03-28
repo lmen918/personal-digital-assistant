@@ -16,5 +16,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PersonalDigitalAssistant"
+rootProject.name = "Retrospective"
 include(":app")

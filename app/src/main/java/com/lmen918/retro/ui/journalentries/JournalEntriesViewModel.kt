@@ -1,4 +1,4 @@
-package com.lmen918.pda.ui.journalentries
+package com.lmen918.retro.ui.journalentries
 
 import android.content.Context
 import androidx.compose.runtime.getValue
@@ -7,8 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lmen918.pda.R
-import com.lmen918.pda.journal.JournalStorage
+import com.lmen918.retro.R
+import com.lmen918.retro.journal.JournalStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat

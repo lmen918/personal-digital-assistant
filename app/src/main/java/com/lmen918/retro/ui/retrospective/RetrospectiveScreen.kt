@@ -1,4 +1,4 @@
-package com.lmen918.pda.ui.retrospective
+package com.lmen918.retro.ui.retrospective
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lmen918.pda.R
+import com.lmen918.retro.R
 import java.util.Locale
 
 const val RETRO_INTRO_DESCRIPTION_TAG = "retro_intro_description"
@@ -182,7 +182,7 @@ private fun SessionPhase(
         Spacer(modifier = Modifier.height(8.dp))
         LinearProgressIndicator(
             progress = {
-                (timeLeft.toFloat() / totalDurationSeconds.toFloat()).coerceIn(0f, 1f)
+                if (totalDurationSeconds > 0) (timeLeft.toFloat() / totalDurationSeconds.toFloat()).coerceIn(0f, 1f) else 0f
             },
             modifier = Modifier.fillMaxWidth()
         )
@@ -318,6 +318,7 @@ private fun CompletePhase(savedLocation: String?, onReset: () -> Unit) {
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(R.string.retro_saved),
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         if (savedLocation != null) {
@@ -325,12 +326,12 @@ private fun CompletePhase(savedLocation: String?, onReset: () -> Unit) {
             Text(
                 text = stringResource(R.string.retro_saved_path, savedLocation),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.outline
             )
         }
         Spacer(modifier = Modifier.height(32.dp))
-        OutlinedButton(onClick = onReset, modifier = Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.start_new_retrospective))
+        Button(onClick = onReset, modifier = Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.ok))
         }
     }
 }

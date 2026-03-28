@@ -1,4 +1,4 @@
-package com.lmen918.pda.ui.journalentries
+package com.lmen918.retro.ui.journalentries
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,7 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lmen918.pda.R
+import com.lmen918.retro.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
