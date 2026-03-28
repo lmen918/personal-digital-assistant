@@ -8,7 +8,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,14 +22,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.lmen918.pda.R
 import java.util.Locale
 
-const val RETRO_SETTINGS_BUTTON_TAG = "retro_settings_button"
 const val RETRO_INTRO_DESCRIPTION_TAG = "retro_intro_description"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RetrospectiveScreen(
-    onOpenSettings: () -> Unit,
-    onOpenJournals: () -> Unit,
     settingsSavedMessage: String? = null,
     onSettingsSavedMessageShown: () -> Unit = {},
     viewModel: RetrospectiveViewModel = hiltViewModel()
@@ -48,21 +44,7 @@ fun RetrospectiveScreen(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.app_name)) },
-                actions = {
-                    TextButton(onClick = onOpenJournals) {
-                        Text(stringResource(R.string.journals))
-                    }
-                    IconButton(
-                        onClick = onOpenSettings,
-                        modifier = Modifier.testTag(RETRO_SETTINGS_BUTTON_TAG)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(R.string.settings)
-                        )
-                    }
-                }
+                title = { Text(stringResource(R.string.app_name)) }
             )
         }
     ) { padding ->

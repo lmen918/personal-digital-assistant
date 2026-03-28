@@ -34,6 +34,18 @@ class JournalEntriesViewModel @Inject constructor(
     var loadError by mutableStateOf<String?>(null)
         private set
 
+    // Edit state
+    var editingEntry by mutableStateOf<JournalEntryUi?>(null)
+        private set
+    var editText by mutableStateOf("")
+    var isSavingEdit by mutableStateOf(false)
+        private set
+    var editError by mutableStateOf<String?>(null)
+
+    // Delete state
+    var pendingDeleteEntry by mutableStateOf<JournalEntryUi?>(null)
+        private set
+
     init {
         refresh()
     }
@@ -54,10 +66,62 @@ class JournalEntriesViewModel @Inject constructor(
             }.onSuccess { loadedEntries ->
                 entries.clear()
                 entries.addAll(loadedEntries)
-            }.onFailure { error ->
+            }.onFailure {
                 loadError = context.getString(R.string.failed_to_load_journals)
             }
             isLoading = false
+        }
+    }
+
+    fun startEdit(entry: JournalEntryUi) {
+        editingEntry = entry
+        editText = entry.content
+    }
+
+    fun cancelEdit() {
+        editingEntry = null
+        editText = ""
+        editError = null
+    }
+
+    fun saveEdit() {
+        val entry = editingEntry ?: return
+        viewModelScope.launch {
+            isSavingEdit = true
+            runCatching {
+                JournalStorage.updateJournal(context, entry.name, editText)
+            }.onSuccess {
+                val index = entries.indexOfFirst { it.name == entry.name }
+                if (index >= 0) entries[index] = entries[index].copy(content = editText)
+                editingEntry = null
+                editText = ""
+                editError = null
+            }.onFailure { error ->
+                editError = error.message ?: context.getString(R.string.edit_save_error)
+            }
+            isSavingEdit = false
+        }
+    }
+
+    fun requestDelete(entry: JournalEntryUi) {
+        pendingDeleteEntry = entry
+    }
+
+    fun cancelDelete() {
+        pendingDeleteEntry = null
+    }
+
+    fun confirmDelete() {
+        val entry = pendingDeleteEntry ?: return
+        pendingDeleteEntry = null
+        viewModelScope.launch {
+            runCatching {
+                JournalStorage.deleteJournal(context, entry.name)
+            }.onSuccess {
+                entries.remove(entry)
+            }.onFailure { error ->
+                loadError = error.message ?: context.getString(R.string.delete_error)
+            }
         }
     }
 
@@ -66,4 +130,3 @@ class JournalEntriesViewModel @Inject constructor(
         return formatter.format(Date(epochSeconds * 1000L))
     }
 }
-

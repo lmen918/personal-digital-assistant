@@ -66,6 +66,72 @@ object JournalStorage {
         }
     }
 
+    fun deleteJournal(context: Context, fileName: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            deleteWithMediaStore(context, fileName)
+        } else {
+            deleteWithLegacyStorage(context, fileName)
+        }
+    }
+
+    fun updateJournal(context: Context, fileName: String, newContent: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            updateWithMediaStore(context, fileName, newContent)
+        } else {
+            updateWithLegacyStorage(context, fileName, newContent)
+        }
+    }
+
+    private fun deleteWithMediaStore(context: Context, fileName: String) {
+        val resolver = context.contentResolver
+        val collection = MediaStore.Files.getContentUri("external")
+        val selection = "${MediaStore.MediaColumns.DISPLAY_NAME}=? AND ${MediaStore.MediaColumns.RELATIVE_PATH}=?"
+        val args = arrayOf(fileName, relativePath())
+        resolver.delete(collection, selection, args)
+    }
+
+    private fun deleteWithLegacyStorage(context: Context, fileName: String) {
+        val publicDir = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+            DIRECTORY_NAME
+        )
+        val appDir = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), DIRECTORY_NAME)
+        listOf(publicDir, appDir).forEach { dir -> File(dir, fileName).takeIf { it.exists() }?.delete() }
+    }
+
+    private fun updateWithMediaStore(context: Context, fileName: String, newContent: String) {
+        val resolver = context.contentResolver
+        val collection = MediaStore.Files.getContentUri("external")
+        val projection = arrayOf(MediaStore.MediaColumns._ID)
+        val selection = "${MediaStore.MediaColumns.DISPLAY_NAME}=? AND ${MediaStore.MediaColumns.RELATIVE_PATH}=?"
+        val args = arrayOf(fileName, relativePath())
+
+        resolver.query(collection, projection, selection, args, null)?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID))
+                val uri = ContentUris.withAppendedId(collection, id)
+
+                val pendingOn = ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 1) }
+                resolver.update(uri, pendingOn, null, null)
+
+                resolver.openOutputStream(uri, "wt")?.use { it.write(newContent.toByteArray()) }
+
+                val pendingOff = ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) }
+                resolver.update(uri, pendingOff, null, null)
+            }
+        }
+    }
+
+    private fun updateWithLegacyStorage(context: Context, fileName: String, newContent: String) {
+        val publicDir = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+            DIRECTORY_NAME
+        )
+        val appDir = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), DIRECTORY_NAME)
+        val file = listOf(publicDir, appDir).map { File(it, fileName) }.firstOrNull { it.exists() }
+        file?.writeText(newContent)
+    }
+
     private fun saveWithMediaStore(context: Context, fileName: String, content: String): Uri {
         val values = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
